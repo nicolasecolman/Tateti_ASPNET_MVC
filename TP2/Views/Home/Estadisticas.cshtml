@@ -1,0 +1,37 @@
+﻿@model IEnumerable<TP2.Models.Estadisticas>
+
+@{
+    ViewBag.Title = "Guardar";
+}
+
+<style type="text/css">
+      td{
+        border: 2px solid black;
+      }
+</style>
+
+<p>Estadisticas</p>
+<center>
+    <table style="border: 2px solid black">
+        <tr>
+          <td><b>Jugador</b></td>
+          <td><b>Partidos ganados</b></td>
+          <td><b>Partidos perdidos</b></td>
+          <td><b>Partidos empatados</b></td>
+          <td><b>Partidos Jugados</b></td>
+        </tr>
+
+        @foreach (var estad in Model)
+        {
+            int jugadas = estad.Ganados + estad.Perdidos + estad.Empatados;
+            <tr>
+              <td>@estad.Name</td>
+              <td>@estad.Ganados</td>
+              <td>@estad.Perdidos</td>
+              <td>@estad.Empatados</td>
+              <td>@jugadas</td>
+            </tr>    
+        }
+
+    </table>
+</center>
