@@ -27,7 +27,6 @@ namespace TP2.Controllers
             oEstadisticas.setEstadisticas(ganador);
 
             return View(oEstadisticas.getEstadisticas());
-            //return Estadisticas();
         }
 
         public ActionResult Estadisticas()
@@ -38,5 +37,15 @@ namespace TP2.Controllers
             return View(oEstadisticas.getEstadisticas());
         }
 
+        public ActionResult Reiniciar()
+        {
+            //Instancio un objeto de la clase Estadisticas
+            var oEstadisticas = new Estadisticas();
+
+            //Actualizo estadisticas
+            oEstadisticas.restartEstadisticas();
+
+            return View(oEstadisticas.getEstadisticas());
+        }
     }
 }

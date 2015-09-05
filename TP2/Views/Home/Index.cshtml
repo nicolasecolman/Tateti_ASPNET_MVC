@@ -29,211 +29,6 @@
       }
     </style>
     
-    <script type="text/javascript">
-        //************  Variables globales  ****************
-        var nroJugador = 1;
-        var CRUZ = "X";
-        var CIRCULO = "O";
-        var colores = new Array("blue", "red");
-        var juegoTerminado = false;
-
-        //***********   Funciones   ***************
-
-        $(document).ready(function () {
-            $.get("/home/estadisticas", function (data) {
-                $("#estadisticas").html(data); 
-            });
-        });
-
-        /*Funcion iniciarJuego
-        *Es llamada al cargarse la pagin
-        *Prepara todo lo necesario para que empieze el juego      
-        */
-        function iniciarJuego() {
-            document.getElementById("nrojugador").innerHTML = nroJugador;
-            document.getElementById("nrojugador").style.color = colores[nroJugador - 1];
-        }
-
-        /*Funcion hacerJugada
-        *Es llamada desde el evento click de las celdas
-        *Marca una celda y controla si el jugador gano el juego
-        */
-        function hacerJugada(me) {
-
-            if (!celdaOcupada(me) && !juegoTerminado) {
-
-                marcarCelda(me);
-
-                if (hizoTateti()) {
-                    mostrarMensajeGano();
-                } else {
-                    
-                    if (todasOcupadas()) {
-                        mostrarMensajeEmpate();
-                    } else {
-                        cambiarJugador(); 
-                    }                    
-
-                }
-
-            }
-
-        }
-
-        /*Funcion celdaOcupada
-        *Verifica si la celda ya fue seleccionada por un jugador anteriormente
-        */
-        function celdaOcupada(me) {
-            return me.innerHTML == CRUZ || me.innerHTML == CIRCULO;
-        }
-
-        /*Funcion todasOcupadas
-        *Verifica si todas las celdas ya fueron seleccionadas 
-        */
-        function todasOcupadas() {
-            return (
-                celdaOcupada(document.getElementById("celda0")) && 
-                celdaOcupada(document.getElementById("celda1")) && 
-                celdaOcupada(document.getElementById("celda2")) && 
-                celdaOcupada(document.getElementById("celda3")) && 
-                celdaOcupada(document.getElementById("celda4")) && 
-                celdaOcupada(document.getElementById("celda5")) && 
-                celdaOcupada(document.getElementById("celda6")) && 
-                celdaOcupada(document.getElementById("celda7")) &&
-                celdaOcupada(document.getElementById("celda8"))
-            );
-        }
-
-        /*Funcion marcarCelda
-        *Le asigna una cruz o un circulo a una celda clickeada por un jugador
-        */
-        function marcarCelda(me) {
-            me.innerHTML = (nroJugador == 1) ? CRUZ : CIRCULO;
-            me.style.color = colores[nroJugador - 1];
-            me.style.cursor = "default";
-        }
-
-        /*Funcion hizoTateti
-        *Controla si el jugador actual gano el juego
-        */
-        function hizoTateti() {
-            var hizo = false;
-            var buscado = (nroJugador == 1) ? CRUZ : CIRCULO;
-            //Recorro filas de la tabla (por id) 
-            if (document.getElementById("celda0").innerHTML == buscado &&
-           document.getElementById("celda1").innerHTML == buscado &&
-           document.getElementById("celda2").innerHTML == buscado) {
-                hizo = true;
-            }
-
-            if (document.getElementById("celda3").innerHTML == buscado &&
-           document.getElementById("celda4").innerHTML == buscado &&
-           document.getElementById("celda5").innerHTML == buscado) {
-                hizo = true;
-            }
-
-            if (document.getElementById("celda6").innerHTML == buscado &&
-           document.getElementById("celda7").innerHTML == buscado &&
-           document.getElementById("celda8").innerHTML == buscado) {
-                hizo = true;
-            }
-
-            //Recorro columnas de la tabla (por id)
-            if (document.getElementById("celda0").innerHTML == buscado &&
-           document.getElementById("celda3").innerHTML == buscado &&
-           document.getElementById("celda6").innerHTML == buscado) {
-                hizo = true;
-            }
-
-            if (document.getElementById("celda1").innerHTML == buscado &&
-           document.getElementById("celda4").innerHTML == buscado &&
-           document.getElementById("celda7").innerHTML == buscado) {
-                hizo = true;
-            }
-
-            if (document.getElementById("celda2").innerHTML == buscado &&
-           document.getElementById("celda5").innerHTML == buscado &&
-           document.getElementById("celda8").innerHTML == buscado) {
-                hizo = true;
-            }
-
-            //Control de cruzados 
-            //Primer control
-            if (document.getElementById("celda0").innerHTML == buscado &&
-           document.getElementById("celda4").innerHTML == buscado &&
-           document.getElementById("celda8").innerHTML == buscado) {
-                hizo = true;
-            }
-
-            if (document.getElementById("celda2").innerHTML == buscado &&
-           document.getElementById("celda4").innerHTML == buscado &&
-           document.getElementById("celda6").innerHTML == buscado) {
-                hizo = true;
-            }
-
-            return hizo;
-        }
-
-        /*Funcion mostrarMensajeGano
-        *Muestra un mensaje indicando que jugador gano el juego y actualiza las estadisticas
-        */
-        function mostrarMensajeGano() {
-            alert("EL GANADOR ES EL JUGADOR NRO. " + nroJugador + "!");
-            document.getElementById("ganador").value = nroJugador;
-            juegoTerminado = true;
-            inhabilitarCeldas();
-            enviarGanador();
-        }
-
-        /*Funcion mostrarMensajeEmpate
-        *Muestra un mensaje indicando que hay empate y actualiza las estadisticas
-        */
-        function mostrarMensajeEmpate() {
-            alert("HAY EMPATE!");
-            document.getElementById("ganador").value = 0;
-            juegoTerminado = true;
-            inhabilitarCeldas();
-            enviarGanador();
-        }
-
-        /*Funcion inhabilitarCeldas
-        *Cambia el cursor de las celdas
-        */
-        function inhabilitarCeldas() {
-            document.getElementById("celda0").style.cursor = "default";
-            document.getElementById("celda1").style.cursor = "default";
-            document.getElementById("celda2").style.cursor = "default";
-            document.getElementById("celda3").style.cursor = "default";
-            document.getElementById("celda4").style.cursor = "default";
-            document.getElementById("celda5").style.cursor = "default";
-            document.getElementById("celda6").style.cursor = "default";
-            document.getElementById("celda7").style.cursor = "default";
-            document.getElementById("celda8").style.cursor = "default"; 
-        }
-
-        /*Funcion cambiarJugador
-        *Permuta entre jugador 1 y 2
-        */
-        function cambiarJugador() {
-            if (nroJugador == 1)
-                nroJugador = 2
-            else
-                nroJugador = 1
-
-            document.getElementById("nrojugador").innerHTML = nroJugador;
-            document.getElementById("nrojugador").style.color = colores[nroJugador - 1]
-        }
-
-        /*Funcion enviarGanador
-        *Enviar el numero de jugador al servidor para que guarde en las estadisticas
-        */
-        function enviarGanador() {
-            $.post("/home/guardar",
-                 { ganador: document.getElementById("ganador").value },
-                 function (data) { $("#estadisticas").html(data); });
-        }
-
-    </script>
   </head>
   
   <body onload="javascript:iniciarJuego()">
@@ -274,7 +69,222 @@
     
     <div id="estadisticas"></div>
 
-    <button onclick="location.reload()" title="Reiniciar Juego">Reiniciar</button>
+    <button onclick="location.reload()" title="Reiniciar Juego">Reiniciar Tablero</button>
+    <button onclick="reiniciarEstadisticas()" title="Reiniciar Estadisticas">Reiniciar Estadisticas</button>
+    
+    <script type="text/javascript">
+        //************  Variables globales  ****************
+        var nroJugador = 1;
+        var CRUZ = "X";
+        var CIRCULO = "O";
+        var colores = new Array("blue", "red");
+        var juegoTerminado = false;
 
+        //***********   Funciones   ***************
+
+        $(document).ready(function () {
+            $.get("/home/estadisticas", function (data) {
+                $("#estadisticas").html(data);
+            });
+        });
+
+        /*Funcion iniciarJuego
+        *Es llamada al cargarse la pagin
+        *Prepara todo lo necesario para que empieze el juego      
+        */
+        function iniciarJuego() {
+            document.getElementById("nrojugador").innerHTML = nroJugador;
+            document.getElementById("nrojugador").style.color = colores[nroJugador - 1];
+        }
+
+        /*Funcion hacerJugada
+        *Es llamada desde el evento click de las celdas
+        *Marca una celda y controla si el jugador gano el juego
+        */
+        function hacerJugada(me) {
+
+            if (!celdaOcupada(me) && !juegoTerminado) {
+
+                marcarCelda(me);
+
+                if (hizoTateti()) {
+                    mostrarMensajeGano();
+                } else {
+
+                    if (todasOcupadas()) {
+                        mostrarMensajeEmpate();
+                    } else {
+                        cambiarJugador();
+                    }
+
+                }
+
+            }
+
+        }
+
+        /*Funcion celdaOcupada
+        *Verifica si la celda ya fue seleccionada por un jugador anteriormente
+        */
+        function celdaOcupada(me) {
+            return me.innerHTML == CRUZ || me.innerHTML == CIRCULO;
+        }
+
+        /*Funcion todasOcupadas
+        *Verifica si todas las celdas ya fueron seleccionadas 
+        */
+        function todasOcupadas() {
+            return (
+                celdaOcupada(document.getElementById("celda0")) &&
+                celdaOcupada(document.getElementById("celda1")) &&
+                celdaOcupada(document.getElementById("celda2")) &&
+                celdaOcupada(document.getElementById("celda3")) &&
+                celdaOcupada(document.getElementById("celda4")) &&
+                celdaOcupada(document.getElementById("celda5")) &&
+                celdaOcupada(document.getElementById("celda6")) &&
+                celdaOcupada(document.getElementById("celda7")) &&
+                celdaOcupada(document.getElementById("celda8"))
+            );
+        }
+
+        /*Funcion marcarCelda
+        *Le asigna una cruz o un circulo a una celda clickeada por un jugador
+        */
+        function marcarCelda(me) {
+            me.innerHTML = (nroJugador == 1) ? CRUZ : CIRCULO;
+            me.style.color = colores[nroJugador - 1];
+            me.style.cursor = "default";
+        }
+
+        /*Funcion hizoTateti
+        *Controla si el jugador actual gano el juego
+        */
+        function hizoTateti() {
+            var hizo = false;
+            var buscado = (nroJugador == 1) ? CRUZ : CIRCULO;
+            //Recorro filas de la tabla (por id) 
+            if (document.getElementById("celda0").innerHTML == buscado &&
+            document.getElementById("celda1").innerHTML == buscado &&
+            document.getElementById("celda2").innerHTML == buscado) {
+                hizo = true;
+            }
+
+            if (document.getElementById("celda3").innerHTML == buscado &&
+            document.getElementById("celda4").innerHTML == buscado &&
+            document.getElementById("celda5").innerHTML == buscado) {
+                hizo = true;
+            }
+
+            if (document.getElementById("celda6").innerHTML == buscado &&
+            document.getElementById("celda7").innerHTML == buscado &&
+            document.getElementById("celda8").innerHTML == buscado) {
+                hizo = true;
+            }
+
+            //Recorro columnas de la tabla (por id)
+            if (document.getElementById("celda0").innerHTML == buscado &&
+            document.getElementById("celda3").innerHTML == buscado &&
+            document.getElementById("celda6").innerHTML == buscado) {
+                hizo = true;
+            }
+
+            if (document.getElementById("celda1").innerHTML == buscado &&
+            document.getElementById("celda4").innerHTML == buscado &&
+            document.getElementById("celda7").innerHTML == buscado) {
+                hizo = true;
+            }
+
+            if (document.getElementById("celda2").innerHTML == buscado &&
+            document.getElementById("celda5").innerHTML == buscado &&
+            document.getElementById("celda8").innerHTML == buscado) {
+                hizo = true;
+            }
+
+            //Control de cruzados 
+            //Primer control
+            if (document.getElementById("celda0").innerHTML == buscado &&
+            document.getElementById("celda4").innerHTML == buscado &&
+            document.getElementById("celda8").innerHTML == buscado) {
+                hizo = true;
+            }
+
+            if (document.getElementById("celda2").innerHTML == buscado &&
+            document.getElementById("celda4").innerHTML == buscado &&
+            document.getElementById("celda6").innerHTML == buscado) {
+                hizo = true;
+            }
+
+            return hizo;
+        }
+
+        /*Funcion mostrarMensajeGano
+        *Muestra un mensaje indicando que jugador gano el juego y actualiza las estadisticas
+        */
+        function mostrarMensajeGano() {
+            alert("EL GANADOR ES EL JUGADOR NRO. " + nroJugador + "!");
+            document.getElementById("ganador").value = nroJugador;
+            juegoTerminado = true;
+            inhabilitarCeldas();
+            enviarGanador();
+        }
+
+        /*Funcion mostrarMensajeEmpate
+        *Muestra un mensaje indicando que hay empate y actualiza las estadisticas
+        */
+        function mostrarMensajeEmpate() {
+            alert("HAY EMPATE!");
+            document.getElementById("ganador").value = 0;
+            juegoTerminado = true;
+            inhabilitarCeldas();
+            enviarGanador();
+        }
+
+        /*Funcion inhabilitarCeldas
+        *Cambia el cursor de las celdas
+        */
+        function inhabilitarCeldas() {
+            document.getElementById("celda0").style.cursor = "default";
+            document.getElementById("celda1").style.cursor = "default";
+            document.getElementById("celda2").style.cursor = "default";
+            document.getElementById("celda3").style.cursor = "default";
+            document.getElementById("celda4").style.cursor = "default";
+            document.getElementById("celda5").style.cursor = "default";
+            document.getElementById("celda6").style.cursor = "default";
+            document.getElementById("celda7").style.cursor = "default";
+            document.getElementById("celda8").style.cursor = "default";
+        }
+
+        /*Funcion cambiarJugador
+        *Permuta entre jugador 1 y 2
+        */
+        function cambiarJugador() {
+            if (nroJugador == 1)
+                nroJugador = 2
+            else
+                nroJugador = 1
+
+            document.getElementById("nrojugador").innerHTML = nroJugador;
+            document.getElementById("nrojugador").style.color = colores[nroJugador - 1]
+        }
+
+        /*Funcion enviarGanador
+        *Enviar el numero de jugador al servidor para que guarde en las estadisticas
+        */
+        function enviarGanador() {
+            $.post("/home/guardar",
+                 { ganador: document.getElementById("ganador").value },
+                 function (data) { $("#estadisticas").html(data); });
+        }
+
+        /*Funcion reiniciarEstadisticas
+        *Pone en 0 los valores
+        */
+        function reiniciarEstadisticas() {
+            $.post("/home/reiniciar",
+                 {},
+                 function (data) { $("#estadisticas").html(data); });
+        }
+
+    </script>
   </body>
 </html>

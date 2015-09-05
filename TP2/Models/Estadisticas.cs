@@ -116,5 +116,37 @@ namespace TP2.Models
             return objEstadisticas;
         }
 
+        public void restartEstadisticas() {
+            string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
+            TextReader txtReader = File.OpenText(path + "/Estadisticas.TXT");
+            TextWriter txtWriter = File.CreateText(path + "/texto_new.txt");
+            while (true)
+            {
+                string newLine = string.Empty;
+                string line = txtReader.ReadLine();
+                if (line != null)
+                {
+                    string[] valores = line.Split(';');
+                                        
+                    int _Ganados = 0;
+                    
+                    int _Perdidos = 0;
+                    
+                    int _Empatados = 0;
+                    
+                    line = valores[0] + ";" + _Ganados.ToString() + ";" + _Perdidos.ToString() + ";" + _Empatados.ToString() + ";";
+                    
+                    txtWriter.WriteLine(line);
+                }
+                else { break; }
+            }
+
+            txtReader.Close();
+            txtWriter.Close();
+            File.Delete(path + "/Estadisticas.TXT");
+            File.Copy(path + "/texto_new.txt", path + "/Estadisticas.TXT");
+            File.Delete(path + "/texto_new.txt");
+        }
+
     }
 }
