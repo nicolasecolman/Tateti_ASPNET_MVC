@@ -45,7 +45,8 @@ namespace TP2.Controllers
             //Actualizo estadisticas
             oEstadisticas.restartEstadisticas();
 
-            return View(oEstadisticas.getEstadisticas());
+            //return View(oEstadisticas.getEstadisticas());
+            return RedirectToAction("Estadisticas");
         }
     }
 }

@@ -82,12 +82,6 @@
 
         //***********   Funciones   ***************
 
-        $(document).ready(function () {
-            $.get("/home/estadisticas", function (data) {
-                $("#estadisticas").html(data);
-            });
-        });
-
         /*Funcion iniciarJuego
         *Es llamada al cargarse la pagin
         *Prepara todo lo necesario para que empieze el juego      
@@ -273,17 +267,28 @@
         function enviarGanador() {
             $.post("/home/guardar",
                  { ganador: document.getElementById("ganador").value },
-                 function (data) { $("#estadisticas").html(data); });
+                 cargaEstadisticas
+            );
         }
 
         /*Funcion reiniciarEstadisticas
         *Pone en 0 los valores
         */
         function reiniciarEstadisticas() {
-            $.post("/home/reiniciar",
-                 {},
-                 function (data) { $("#estadisticas").html(data); });
+            $.post("/home/reiniciar", {}, cargaEstadisticas );
         }
+
+        /*Funcion cargaEstadisticas
+        *Carga el contenedor de estadísticas
+        *Recibe un string con el html necesario
+        */
+        function cargaEstadisticas(data) {
+            $("#estadisticas").html(data);
+        }
+
+        $(document).ready(function () {
+            $.get("/home/estadisticas", cargaEstadisticas);
+        });
 
     </script>
   </body>
