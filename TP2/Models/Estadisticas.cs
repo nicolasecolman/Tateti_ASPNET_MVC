@@ -18,8 +18,10 @@ namespace TP2.Models
         public void setEstadisticas(string ganador)
         {
             string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-            TextReader txtReader = File.OpenText(path + "/Estadisticas.TXT");
-            TextWriter txtWriter = File.CreateText(path + "/texto_new.txt");
+            String strFullPath = path + "/Estadisticas.TXT";
+            String strFullPathAux = path + "/texto_new.txt";
+            TextReader txtReader = File.OpenText(strFullPath);
+            TextWriter txtWriter = File.CreateText(strFullPathAux);
             while (true)
             {
                 string newLine = string.Empty;
@@ -69,9 +71,9 @@ namespace TP2.Models
 
             txtReader.Close();
             txtWriter.Close();
-            File.Delete(path + "/Estadisticas.TXT");
-            File.Copy(path + "/texto_new.txt", path + "/Estadisticas.TXT");
-            File.Delete(path + "/texto_new.txt");
+            File.Delete(strFullPath);
+            File.Copy(strFullPathAux, strFullPath);
+            File.Delete(strFullPathAux);
         }
 
 
@@ -118,8 +120,10 @@ namespace TP2.Models
 
         public void restartEstadisticas() {
             string path = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
-            TextReader txtReader = File.OpenText(path + "/Estadisticas.TXT");
-            TextWriter txtWriter = File.CreateText(path + "/texto_new.txt");
+            String strFullPath = path + "/Estadisticas.TXT";
+            String strFullPathAux = path + "/texto_new.txt";
+            TextReader txtReader = File.OpenText(strFullPath);
+            TextWriter txtWriter = File.CreateText(strFullPathAux);
             while (true)
             {
                 string newLine = string.Empty;
@@ -143,9 +147,9 @@ namespace TP2.Models
 
             txtReader.Close();
             txtWriter.Close();
-            File.Delete(path + "/Estadisticas.TXT");
-            File.Copy(path + "/texto_new.txt", path + "/Estadisticas.TXT");
-            File.Delete(path + "/texto_new.txt");
+            File.Delete(strFullPath);
+            File.Copy(strFullPathAux, strFullPath);
+            File.Delete(strFullPathAux);
         }
 
     }

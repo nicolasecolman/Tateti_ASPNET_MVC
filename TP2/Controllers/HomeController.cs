@@ -13,8 +13,7 @@ namespace TP2.Controllers
         // GET: /Home/
 
         public ActionResult Index()
-        {
-            
+        {            
             return View();
         }
 
@@ -23,9 +22,14 @@ namespace TP2.Controllers
             //Instancio un objeto de la clase Estadisticas
             var oEstadisticas = new Estadisticas();
             
-            //Actualizo estadisticas
+            //Actualizo estadísticas
             oEstadisticas.setEstadisticas(ganador);
 
+            //Devuelvo vista con estadísticas
+            /**
+            **Nota: podría usar RedirectToAction pero uso una vista asociada al método Guardar 
+            **para probar el helper @Html.Partial 
+            **/
             return View(oEstadisticas.getEstadisticas());
         }
 
@@ -33,6 +37,7 @@ namespace TP2.Controllers
         {
             //Instancio un objeto de la clase Estadisticas
             var oEstadisticas = new Estadisticas();
+
             //Obtengo la lista de jugadores con sus respectivas posiciones y se la paso a la vista
             return View(oEstadisticas.getEstadisticas());
         }
@@ -42,10 +47,13 @@ namespace TP2.Controllers
             //Instancio un objeto de la clase Estadisticas
             var oEstadisticas = new Estadisticas();
 
-            //Actualizo estadisticas
+            //Reinicio estadísticas
             oEstadisticas.restartEstadisticas();
-
-            //return View(oEstadisticas.getEstadisticas());
+            
+            /**
+            ** Llamo al método Estadisticas para probar una alternativa diferente a 
+            ** la sintáxis usada en el método Guardar
+            **/
             return RedirectToAction("Estadisticas");
         }
     }
